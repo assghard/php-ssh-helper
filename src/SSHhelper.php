@@ -35,7 +35,7 @@ class SSHhelper {
         }
     }
 
-    private function disconnect() {
+    public function disconnect() {
         ssh2_disconnect($this->stream);
         unset($this->stream);
 
