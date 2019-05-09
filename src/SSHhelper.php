@@ -13,11 +13,15 @@ class SSHhelper {
     private $connection;
     private $stream;
 
-    public function __construct($config) {
+    public function __construct($config = []) {
         $this->config = $config;
     }
     public function __destruct() {
         $this->disconnect();
+    }
+
+    public function setConfig($configuration){
+        $this->config = $configuration;
     }
 
     private function connect() {
@@ -31,7 +35,7 @@ class SSHhelper {
         }
     }
 
-    public function disconnect() {
+    private function disconnect() {
         ssh2_disconnect($this->stream);
         unset($this->stream);
 
@@ -55,5 +59,4 @@ class SSHhelper {
             echo $exc->getMessage();
         }
     }
-    
 }

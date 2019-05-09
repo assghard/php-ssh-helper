@@ -1,6 +1,6 @@
 {
     "name": "assghard/php-ssh-helper",
-    "description": "PHP SSH helper",
+    "description": "PHP SSH helper to executing commands on server via SSH protocol. Library provides simply using of SSH under PHP",
     "type": "library",
     "license": "MIT",
     "authors": [
