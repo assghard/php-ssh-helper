@@ -1,6 +1,6 @@
 # PHP SSH helper to executing commands on server via SSH protocol
 
-Library provides simply using of SSH under PHP. Choose the best usage option
+Composer library which provides simply using of SSH under PHP
 
 ## Pre requirements
  * PHP installed
