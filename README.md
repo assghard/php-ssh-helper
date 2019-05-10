@@ -23,7 +23,14 @@ $sshConfig = [
 ];
 
 $sshHelper = new SSHhelper($sshConfig); // do connect
-$sshHelper->execSshCommand('mkdir TEST'); // creates a directory
+
+$sshHelper->execSshCommand('mkdir testDir');
+$sshHelper->ssh_chmod('testDir', 0777);
+$sshHelper->execSshCommand('touch ./testDir/test.txt');
+$sshHelper->ssh_copy_file('./testDir/test.txt', '/var/www/html/test/TEST.txt');
+$sshHelper->ssh_delete_file('./testDir/test.txt');
+$sshHelper->ssh_remove_dir('./testDir');
+
 $sshHelper->disconnect();
 ```
 
@@ -72,6 +79,16 @@ $this->ssh->execSshCommand('mkdir TEST');
 $this->ssh->disconnect();
 ...
 ```
+
+## Method list
+ * **setConfig()** - Setter which sets a server SSH configuration to helper
+ * **connect()** - Do ssh2_connect to the remote server via SSH and set a connection stream. Method is using inside others methods.
+ * **disconnect()** - Do disconnect and free resources
+ * **execSshCommand()** - General execution method. Executes commands on server via SSH connection
+ * ssh_chmod() - Change remote folder permissions
+ * ssh_copy_file() - Copy file on remote server from sourceFile location to destinationFile
+ * ssh_delete_file() - Deletes remote file (NOT a folder)
+ * ssh_remove_dir() - Removes remote folder
 
 ## Tested on PHP 7.2 and Laravel 5.8
 	

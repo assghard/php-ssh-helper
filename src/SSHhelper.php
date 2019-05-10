@@ -1,14 +1,14 @@
 <?php
 /**
- * PHP SSH helper
- * 
+ * PHP SSH helper contains a set of helpful methods which makes working with SSH under PHP more easily
+ *
  * @package assghard/assghard/php-ssh-helper
  * @author Ivan Dublianski (assghard) <ivan.dublianski@gmail.com>
  */
 namespace Assghard\SSH;
 
 class SSHhelper {
-    
+
     private $config;
     private $connection;
     private $stream;
@@ -20,10 +20,22 @@ class SSHhelper {
         $this->disconnect();
     }
 
+    /**
+     * Setter which sets a server SSH configuration to helper
+     *
+     * @param array $configuration Associative array (key-value) should contains SSH host, port, user, password as array keys and data as values
+     * @return void
+     */
     public function setConfig($configuration){
         $this->config = $configuration;
     }
 
+    /**
+     * Do ssh2_connect to the remote server via SSH and
+     * set $this->connection and $this->stream params
+     *
+     * @return void
+     */
     private function connect() {
         if(!function_exists('ssh2_connect')) {
             die('Function function_exists not found. You can not use ssh2 here');
@@ -41,16 +53,25 @@ class SSHhelper {
         }
     }
 
+    /**
+     * Disconnects SSH stream and frees resources
+     *
+     * @return void
+     */
     public function disconnect() {
-        ssh2_disconnect($this->stream);
-        unset($this->stream);
+        if(isset($this->stream) && !empty($this->stream)){
+            ssh2_disconnect($this->stream);
+            unset($this->stream);
+        }
 
-        ssh2_disconnect($this->connection);
-        unset($this->connection);
+        if(isset($this->connection) && !empty($this->connection)){
+            ssh2_disconnect($this->connection);
+            unset($this->connection);
+        }
     }
 
     /**
-     * General execution method. Executes command on server via SSH connection
+     * General execution method. Executes commands on server via SSH connection
      *
      * @param string $command
      * @return object $stream
@@ -58,9 +79,7 @@ class SSHhelper {
     public function execSshCommand($command) {
         try {
             $this->connect();
-            $this->stream = ssh2_exec($this->connection, $command);
-
-            return $this->stream;
+            ssh2_exec($this->connection, $command);
         } catch (\Exception $exc) {
             echo $exc->getMessage();
         }
@@ -72,32 +91,63 @@ class SSHhelper {
      * Additional methods
      * ========================================================
      */
+
+     /**
+      * Change remote folder permissions
+      *
+      * @param string $folder Absolute (or relative) path to folder
+      * @param integer $mod Folder permissions with zero at the begining
+      * @return void
+      */
     public function ssh_chmod($folder, $mod = 0755) {
         try {
+            $this->connect();
             ssh2_sftp_chmod($this->stream, $folder, $mod);
         } catch (\Exception $exc) {
             echo $exc->getMessage();
         }
     }
 
-    public function ssh_copy_file($remoteFile, $localFile) {
+    /**
+     * Copy file on remote server from sourceFile location to destinationFile
+     *
+     * @param string $sourceFile Absolute path to source file with filename and extension
+     * @param [type] $destinationFile Absolute path to destination file with filename and extension
+     * @return void
+     */
+    public function ssh_copy_file($sourceFile, $destinationFile) {
         try {
-            copy("ssh2.sftp://{$this->stream}/{$remoteFile}", $localFile);
+            $this->connect();
+            copy("ssh2.sftp://{$this->stream}/{$sourceFile}", $destinationFile);
         } catch (\Exception $exc) {
             echo $exc->getMessage();
         }
     }
 
-    public function ssh_unlink_file($remoteFile) {
+    /**
+     * Deletes remote file (NOT a folder)
+     *
+     * @param string $remoteFile Absolute path to file which should be deleted
+     * @return void
+     */
+    public function ssh_delete_file($remoteFile) {
         try {
+            $this->connect();
             ssh2_sftp_unlink($this->stream, $remoteFile);
         } catch (\Exception $exc) {
             echo $exc->getMessage();
         }
     }
 
+    /**
+     * Removes remote folder
+     *
+     * @param string $remoteDir Absolute path to folder which should be deleted
+     * @return void
+     */
     public function ssh_remove_dir($remoteDir) {
         try {
+            $this->connect();
             ssh2_sftp_rmdir($this->stream, $remoteDir);
         } catch (\Exception $exc) {
             echo $exc->getMessage();
