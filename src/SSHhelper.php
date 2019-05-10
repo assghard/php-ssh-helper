@@ -2,7 +2,7 @@
 /**
  * PHP SSH helper contains a set of helpful methods which makes working with SSH under PHP more easily
  *
- * @package assghard/assghard/php-ssh-helper
+ * @package assghard/php-ssh-helper
  * @author Ivan Dublianski (assghard) <ivan.dublianski@gmail.com>
  */
 namespace Assghard\SSH;
