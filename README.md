@@ -5,6 +5,7 @@ Composer library which provides simply using of SSH under PHP
 ## Pre requirements
  * PHP installed
  * composer installed
+ * PHP extensions installed: php-mbstring, php-xml
  * php-ssh2 installed (#sudo apt-get install php-ssh2)
  
 ## Installation
